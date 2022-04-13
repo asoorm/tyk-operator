@@ -29,16 +29,50 @@ type AccessRight struct {
 	Versions []string `json:"versions,omitempty"`
 }
 
+type SecurityPolicyNamespacedName struct {
+	Namespace string `json:"namespace,omitempty"`
+	Name      string `json:"name"`
+}
+
 // CredentialSpec defines the desired state of Credential
 type CredentialSpec struct {
-	Rate             int                    `json:"rate,omitempty"`
-	Per              int                    `json:"per,omitempty"`
-	OrgID            string                 `json:"org_id,omitempty"`
-	Allowance        int                    `json:"allowance,omitempty"`
-	QuotaRenews      int                    `json:"quota_renews,omitempty"`
-	QuotaRenewalRate int                    `json:"quota_renewal_rate,omitempty"`
-	QuotaMax         int                    `json:"quota_max,omitempty"`
-	AccessRights     map[string]AccessRight `json:"access_rights,omitempty"`
+
+	// LastCheck Deprecated
+	//LastCheck                     int64                       `json:"last_check" msg:"last_check"`
+	// Allowance Deprecated
+	//Allowance                     float64                     `json:"allowance" msg:"allowance"`
+
+	// Rate represents the number of requests allowed in the specified rate limiting window
+	Rate int64 `json:"rate" msg:"rate,omitempty"`
+
+	// Per represents the size of the rate limiting window in seconds
+	Per int64 `json:"per" msg:"per,omitempty"`
+
+	// Expires represents when a credential should expire. 0 disables credential expiry.
+	Expires int64 `json:"expires" msg:"expires,omitempty"`
+
+	// QuotaRenews is an epoch that defines when the quota renews
+	QuotaRenews int `json:"quota_renews,omitempty"`
+
+	// QuotaRenewalRate represents the size of the quota window in seconds. For 1 hour, this value would be 3600.
+	QuotaRenewalRate int `json:"quota_renewal_rate,omitempty"`
+
+	// QuotaMax defines the maximum number of requests permitted within QuotaRenewalRate seconds
+	QuotaMax int `json:"quota_max,omitempty"`
+
+	// AccessRights Defines which APIs and versions this credential has access to
+	AccessRights map[string]AccessRight `json:"access_rights,omitempty"`
+
+	// ApplyPolicies specifies a list of policy_ids to apply to this credential.
+	// Do not use directly. Prefer using ApplyPolicyRefs instead which allow you to specify a namespacedName instead.
+	ApplyPolicies []string `json:"apply_policies,omitempty"`
+
+	// ApplyPolicyRefs specifies a list of SecurityPolicies to apply to this credential.
+	ApplyPolicyRefs []SecurityPolicyNamespacedName `json:"apply_policy_refs,omitempty"`
+
+	// OrgID represents the tyk organization this credential belongs to. It can be used in conjunction. This is automatically
+	// set by Tyk Operator
+	OrgID string `json:"org_id,omitempty"`
 }
 
 // CredentialStatus defines the observed state of Credential

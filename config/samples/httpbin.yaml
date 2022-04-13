@@ -11,3 +11,9 @@ spec:
     target_url: http://httpbin.org
     listen_path: /httpbin
     strip_listen_path: true
+  version_data:
+    default_version: Default
+    not_versioned: true
+    versions:
+      Default:
+        name: Default
